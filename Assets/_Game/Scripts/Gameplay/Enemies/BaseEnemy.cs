@@ -64,7 +64,7 @@ namespace Gameplay.Enemies
 
         public virtual void OnCalledFromPool()
         {
-            EventDispatcher.Instance.Subscribe<LevelFailedEvent>(OnLevelFail);
+            
         }
 
         public virtual void OnReturnToPool()
@@ -73,7 +73,6 @@ namespace Gameplay.Enemies
             _navMeshAgent.ResetPath();
             _baseDamage = 0;
             _navMeshAgent.enabled = false;
-            EventDispatcher.Instance.Unsubscribe<LevelFailedEvent>(OnLevelFail);
         }
 
         public void OnHit(float damage)
@@ -95,11 +94,5 @@ namespace Gameplay.Enemies
         {
             EventDispatcher.Instance.Dispatch(new EnemyReachedToBaseEvent(_baseDamage));
         }
-        
-        private void OnLevelFail(LevelFailedEvent levelFailedEvent)
-        {
-            EventDispatcher.Instance.Dispatch(new EnemyDeathEvent(this));
-        }
-        
     }
 }

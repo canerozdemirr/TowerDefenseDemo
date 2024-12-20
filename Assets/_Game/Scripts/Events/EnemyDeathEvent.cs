@@ -3,7 +3,7 @@ using Interfaces;
 
 namespace Events
 {
-    public struct EnemyDeathEvent : IEvent
+    public readonly struct EnemyDeathEvent : IEvent
     {
         public readonly BaseEnemy DeadEnemy;
         public EnemyDeathEvent(BaseEnemy deadEnemy)
