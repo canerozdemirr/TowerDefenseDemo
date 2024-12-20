@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Tower
   - Enemy
+  - Road
   layers:
   - Default
   - TransparentFX
