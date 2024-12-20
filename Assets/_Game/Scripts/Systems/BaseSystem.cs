@@ -5,7 +5,7 @@ using Zenject;
 
 namespace Systems
 {
-    public abstract class BaseSystem : ISystem
+    public abstract class BaseSystem : IInitializable, ITickable, IDisposable
     {
         private bool _isInitialized;
         
@@ -19,7 +19,12 @@ namespace Systems
             _isInitialized = true;
         }
 
-        public void DeInitialize()
+        public virtual void Tick()
+        {
+            
+        }
+
+        public virtual void Dispose()
         {
             if (!_isInitialized)
             {
