@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f59c5cc08d9754b4cbbd6e003aa6e246, type: 3}
+  m_Name: LevelWaveConfig
+  m_EditorClassIdentifier: 
+  _configID: 60b8de87-83e8-406c-9e93-fadbf3fd6bd2
+  _allEnemyWaveConfigs:
+  - {fileID: 11400000, guid: a6bed676e4e662f429c791030500f76d, type: 2}
+  - {fileID: 11400000, guid: 24be034869224b24291dce00b351c09c, type: 2}
+  _delayBetweenWaves: 0

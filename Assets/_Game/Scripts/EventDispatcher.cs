@@ -16,7 +16,7 @@ public class EventDispatcher
         
     }
 
-    public void Subscribe<T>(Action<T> handler) where T: IEvent
+    public void Subscribe<T>(Action<T> handler) where T : IEvent
     {
         if (handler == null) throw new ArgumentNullException(nameof(handler), "The handler method cannot be null");
 
@@ -24,7 +24,8 @@ public class EventDispatcher
         {
             if (existingHandlers.Contains(handler))
             {
-                string errorMessage = $"The handler '{handler.Method.Name}' is already subscribed to the event '{typeof(T)}'.";
+                string errorMessage =
+                    $"The handler '{handler.Method.Name}' is already subscribed to the event '{typeof(T)}'.";
                 throw new InvalidOperationException(errorMessage);
             }
 
@@ -36,7 +37,7 @@ public class EventDispatcher
         }
     }
 
-    public void Unsubscribe<T>(Action<T> handler) where T: IEvent
+    public void Unsubscribe<T>(Action<T> handler) where T : IEvent
     {
         if (handler == null) return;
 
@@ -50,7 +51,7 @@ public class EventDispatcher
         }
     }
 
-    public void Dispatch<T>(T payload) where T: IEvent
+    public void Dispatch<T>(T payload) where T : IEvent
     {
         if (_eventDictionary.TryGetValue(typeof(T), out List<Delegate> handlers))
         {
@@ -72,7 +73,7 @@ public class EventDispatcher
         }
     }
 
-    public void UnsubscribeAll<T>() where T: IEvent
+    public void UnsubscribeAll<T>() where T : IEvent
     {
         _eventDictionary.Remove(typeof(T));
     }
@@ -82,7 +83,7 @@ public class EventDispatcher
         _eventDictionary.Clear();
     }
 
-    public void Dispatch<T>(params T[] events) where T: IEvent
+    public void Dispatch<T>(params T[] events) where T : IEvent
     {
         foreach (var eventPayload in events)
         {
