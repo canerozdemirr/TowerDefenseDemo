@@ -15,7 +15,6 @@ namespace Data.Configs
         private float _delayBetweenWaves;
 
         public List<EnemyWaveConfig> EnemyWaveConfigList => _allEnemyWaveConfigs;
-
         public float DelayBetweenWaves => _delayBetweenWaves;
     }
 }

@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: GiantConfig
   m_EditorClassIdentifier: 
   _configID: 2ed9248e-e074-408d-bf5e-a545d2f2435b
+  _enemyType: 1
   _health: 100
   _speed: 2
+  _baseDamage: 5

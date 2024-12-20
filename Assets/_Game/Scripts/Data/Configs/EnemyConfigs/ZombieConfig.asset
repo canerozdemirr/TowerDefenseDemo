@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: ZombieConfig
   m_EditorClassIdentifier: 
   _configID: 7cf3f9a6-a0b9-40a7-b33a-fbf45492033e
+  _enemyType: 0
   _health: 50
   _speed: 5
+  _baseDamage: 1

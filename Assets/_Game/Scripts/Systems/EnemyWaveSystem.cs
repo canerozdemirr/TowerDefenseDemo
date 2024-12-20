@@ -27,7 +27,10 @@ namespace Systems
 
         private void OnLevelStart(LevelStartedEvent levelStartedEvent)
         {
-            //TODO: Start Enemy Spawn Routine
+            for (int i = 0; i < _levelWaveConfig.EnemyWaveConfigList.Count; i++)
+            {
+                //TODO: Start Enemy Spawn Routine
+            }
         }
     }
 }

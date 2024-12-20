@@ -20,9 +20,14 @@ namespace Data.Configs.EnemyConfigs
         [Foldout("Enemy Attributes")]
         [SerializeField] 
         private float _speed;
+        
+        [Foldout("Enemy Attributes")]
+        [SerializeField] 
+        private int _baseDamage;
 
         public float Health => _health;
         public float Speed => _speed;
         public Enums.EnemyType EnemyType => _enemyType;
+        public int BaseDamage => _baseDamage;
     }
 }

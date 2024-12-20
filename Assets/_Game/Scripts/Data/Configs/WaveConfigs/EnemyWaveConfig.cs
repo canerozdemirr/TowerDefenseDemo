@@ -17,7 +17,6 @@ namespace Data.Configs
         private float _spawnDelayBetweenEachUnit;
 
         public List<EnemyWaveData> EnemyWaveDataList => _enemyWaveDataList;
-        
         public float SpawnDelayBetweenEachUnit => _spawnDelayBetweenEachUnit;
     }
 }
