@@ -16,4 +16,4 @@ MonoBehaviour:
   _enemyWaveDataList:
   - enemyType: 0
     enemyAmount: 20
-  _spawnDelayBetweenEachUnit: 0.4
+  _spawnDelayBetweenEachUnit: 3.6

@@ -131,7 +131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 717b9a3d73604e4418cdf0b069d31d62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: 0
+  _navMeshAgent: {fileID: 7408305325904422612}
 --- !u!65 &7336084243676888507
 BoxCollider:
   m_ObjectHideFlags: 0

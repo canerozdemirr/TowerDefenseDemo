@@ -15,5 +15,7 @@ MonoBehaviour:
   _configID: 7cf3f9a6-a0b9-40a7-b33a-fbf45492033e
   _enemyType: 0
   _health: 50
-  _speed: 5
+  _speed: 2
   _baseDamage: 1
+  _enemyPrefab: {fileID: 4376393189919490052, guid: 4de33e337ffbb024ca4b8895ec2f3785,
+    type: 3}

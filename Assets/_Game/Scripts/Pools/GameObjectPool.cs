@@ -1,6 +1,8 @@
+using System;
 using Interfaces;
 using UnityEngine;
 using UnityEngine.Pool;
+using Object = UnityEngine.Object;
 
 namespace Pools
 {
@@ -24,8 +26,6 @@ namespace Pools
 
             _pool = new ObjectPool<T>(CreatePoolObject, OnTakeFromPool, OnReturnedToPool, OnDestroyPoolObject, true,
                 _defaultSize, maxSize);
-
-            WarmUp();
         }
 
         #region Pool Events
@@ -77,8 +77,14 @@ namespace Pools
             T component = pooledObject.GetComponent<T>();
             if (component == null)
             {
-                Debug.LogWarning($"Prefab {_prefab.name} does not contain a {typeof(T)} component. Adding it dynamically.");
+                Debug.LogWarning(
+                    $"Prefab {_prefab.name} does not contain a {typeof(T)} component. Adding it dynamically.");
                 component = pooledObject.AddComponent<T>();
+            }
+            
+            if (_dontDestroyOnLoad && _poolParent != null)
+            {
+                Object.DontDestroyOnLoad(_poolParent.gameObject);
             }
 
             if (_dontDestroyOnLoad)
@@ -93,16 +99,7 @@ namespace Pools
         {
             if (_prefab.GetComponent<T>() == null)
             {
-                Debug.LogWarning($"Prefab {_prefab.name} does not contain a {typeof(T)} component. It will be added dynamically.");
-            }
-        }
-
-        private void WarmUp()
-        {
-            for (int i = 0; i < _defaultSize; i++)
-            {
-                var obj = _pool.Get();
-                _pool.Release(obj);
+                throw new ArgumentException($"Prefab {_prefab.name} does not contain a {typeof(T)} component.");
             }
         }
     }

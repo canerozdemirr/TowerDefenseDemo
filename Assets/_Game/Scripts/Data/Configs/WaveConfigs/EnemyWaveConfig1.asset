@@ -22,4 +22,4 @@ MonoBehaviour:
     enemyAmount: 4
   - enemyType: 1
     enemyAmount: 1
-  _spawnDelayBetweenEachUnit: 0.5
+  _spawnDelayBetweenEachUnit: 3
