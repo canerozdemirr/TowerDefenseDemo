@@ -29,6 +29,7 @@ namespace Gameplay.Enemies
         
         #endregion
         
+        private IEventDispatcher _eventDispatcher;
         private AllEnemyConfigs _allEnemyConfigs;
 
         [Foldout("Components")] 
@@ -36,9 +37,10 @@ namespace Gameplay.Enemies
         private NavMeshAgent _navMeshAgent;
 
         [Inject]
-        public void Inject(AllEnemyConfigs allEnemyConfigs)
+        public void Inject(AllEnemyConfigs allEnemyConfigs, IEventDispatcher eventDispatcher)
         {
             _allEnemyConfigs = allEnemyConfigs;
+            _eventDispatcher = eventDispatcher;
         }
         
         public virtual void Initialize()
@@ -80,7 +82,7 @@ namespace Gameplay.Enemies
             _health -= damage;
             if (_health <= 0)
             {
-                EventDispatcher.Instance.Dispatch(new EnemyDeathEvent(this));
+                _eventDispatcher.Dispatch(new EnemyDeathEvent(this));
             }
         }
 
@@ -92,7 +94,7 @@ namespace Gameplay.Enemies
 
         public void OnMovementEnd()
         {
-            EventDispatcher.Instance.Dispatch(new EnemyReachedToBaseEvent(_baseDamage));
+            _eventDispatcher.Dispatch(new EnemyReachedToBaseEvent(_baseDamage));
         }
     }
 }

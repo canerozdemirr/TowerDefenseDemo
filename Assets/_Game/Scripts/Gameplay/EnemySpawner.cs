@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Data.Configs.EnemyConfigs;
 using Events;
@@ -11,7 +10,7 @@ using Zenject;
 
 namespace Gameplay
 {
-    public class EnemySpawner : MonoBehaviour
+    public class EnemySpawner : MonoBehaviour, IEnemySpawner
     {
         [SerializeField] 
         private List<Transform> _spawnPoints;
@@ -21,25 +20,26 @@ namespace Gameplay
         private EnemyConfig _enemyConfig;
 
         private Dictionary<Enums.EnemyType, GameObjectPool<BaseEnemy>> _prefabMap;
-
-        [Inject] 
+        
         private DiContainer _container;
+        private IEventDispatcher _eventDispatcher;
 
         [Inject]
-        public void Inject(DiContainer container, AllEnemyConfigs allEnemyConfigs)
+        public void Inject(DiContainer container, AllEnemyConfigs allEnemyConfigs, IEventDispatcher eventDispatcher)
         {
             _container = container;
+            _eventDispatcher = eventDispatcher;
             InitializePool(allEnemyConfigs);
         }
 
         private void OnEnable()
         {
-            EventDispatcher.Instance.Subscribe<EnemyDeathEvent>(OnEnemyDeath);
+            _eventDispatcher.Subscribe<EnemyDeathEvent>(OnEnemyDeath);
         }
 
         private void OnDestroy()
         {
-            EventDispatcher.Instance.Unsubscribe<EnemyDeathEvent>(OnEnemyDeath);
+            _eventDispatcher.Unsubscribe<EnemyDeathEvent>(OnEnemyDeath);
         }
 
         private void InitializePool(AllEnemyConfigs allEnemyConfigs)
@@ -89,7 +89,7 @@ namespace Gameplay
             }
         }
 
-        private void DeSpawn(BaseEnemy enemy)
+        public void DeSpawn(BaseEnemy enemy)
         {
             if (_prefabMap.TryGetValue(enemy.EnemyType, out var pool))
             {

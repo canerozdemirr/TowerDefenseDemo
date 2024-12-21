@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Interfaces;
 using UnityEngine;
 
-public class EventDispatcher
+public class EventDispatcher : IEventDispatcher
 {
     private static readonly Lazy<EventDispatcher> _instance = new(() => new EventDispatcher());
     public static EventDispatcher Instance => _instance.Value;
@@ -13,7 +13,6 @@ public class EventDispatcher
 
     private EventDispatcher()
     {
-        
     }
 
     public void Subscribe<T>(Action<T> handler) where T : IEvent

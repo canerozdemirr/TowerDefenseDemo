@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Data.Configs;
 using Events;
 using Gameplay;
+using Interfaces;
 using UnityEngine;
 using Utilities.TypeUtilities;
 
@@ -12,55 +13,66 @@ namespace Systems
     public class EnemyWaveSystem : BaseSystem
     {
         private LevelWaveConfig _levelWaveConfig;
-        private EnemySpawner _enemySpawner;
+        private IEnemySpawner _enemySpawner;
         
         private CancellationTokenSource _cts;
+        
+        private readonly IEventDispatcher _eventDispatcher;
 
-        public EnemyWaveSystem(LevelWaveConfig levelWaveConfig, EnemySpawner enemySpawner)
+        public EnemyWaveSystem(LevelWaveConfig levelWaveConfig, IEnemySpawner enemySpawner, IEventDispatcher eventDispatcher)
         {
             _levelWaveConfig = levelWaveConfig;
             _enemySpawner = enemySpawner;
-            _cts = new CancellationTokenSource();
+            _eventDispatcher = eventDispatcher;
         }
         public override void Initialize()
         {
-            if (!IsConfigAssigned()) 
+            if (!IsWaveSpawnReady()) 
                 return;
             
             base.Initialize();
-            EventDispatcher.Instance.Subscribe<LevelStartedEvent>(OnLevelStart);
-            EventDispatcher.Instance.Subscribe<LevelFailedEvent>(OnLevelFail);
+            _eventDispatcher.Subscribe<LevelStartedEvent>(OnLevelStart);
+            _eventDispatcher.Subscribe<LevelFailedEvent>(OnLevelFail);
+            _cts = new CancellationTokenSource();
         }
 
         public override void Dispose()
         {
             base.Dispose();
-            EventDispatcher.Instance.Unsubscribe<LevelStartedEvent>(OnLevelStart);
-            EventDispatcher.Instance.Unsubscribe<LevelFailedEvent>(OnLevelFail);
+            _eventDispatcher.Unsubscribe<LevelStartedEvent>(OnLevelStart);
+            _eventDispatcher.Unsubscribe<LevelFailedEvent>(OnLevelFail);
+            HandleCancellation();
         }
 
-        private void OnLevelStart(LevelStartedEvent levelStartedEvent)
+        private async void OnLevelStart(LevelStartedEvent levelStartedEvent)
         {
-            EnemyWaveConfig enemyWaveConfig;
-            for (int i = 0; i < _levelWaveConfig.EnemyWaveConfigList.Count; i++)
+            try
             {
-                enemyWaveConfig = _levelWaveConfig.EnemyWaveConfigList[i];
-                EnemyWaveData enemyWaveData;
-                for (int j = 0; j < enemyWaveConfig.EnemyWaveDataList.Count; j++)
+                foreach (var enemyWaveConfig in _levelWaveConfig.EnemyWaveConfigList)
                 {
-                    enemyWaveData = enemyWaveConfig.EnemyWaveDataList[j];
-                    StartSpawningEnemiesInWave(enemyWaveData, enemyWaveConfig.SpawnDelayBetweenEachUnit).Forget();
+                    await SpawnWave(enemyWaveConfig);
+
+                    // Delay before the next wave
+                    await UniTask.Delay((int)(enemyWaveConfig.SpawnDelayBetweenEachUnit * 1000), cancellationToken: _cts.Token);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.LogWarning("Wave spawning canceled.");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"An error occurred during wave spawning: {e.Message}");
             }
         }
 
         private void OnLevelFail(LevelFailedEvent levelFailedEvent)
         {
-            _cts.Cancel();
+            HandleCancellation();
             _enemySpawner.ClearPools();
         }
         
-        private async UniTaskVoid StartSpawningEnemiesInWave(EnemyWaveData enemyWaveData, float enemySpawnInterval)
+        private async UniTask StartSpawningEnemiesInWave(EnemyWaveData enemyWaveData, float enemySpawnInterval)
         {
             try
             {
@@ -81,14 +93,40 @@ namespace Systems
             }
         }
         
-        private bool IsConfigAssigned()
+        private async UniTask SpawnWave(EnemyWaveConfig enemyWaveConfig)
         {
-            if (_levelWaveConfig != null && _levelWaveConfig.EnemyWaveConfigList != null) 
-                return true;
+            foreach (var enemyWaveData in enemyWaveConfig.EnemyWaveDataList)
+            {
+                await StartSpawningEnemiesInWave(enemyWaveData, enemyWaveConfig.SpawnDelayBetweenEachUnit);
+            }
+        }
+        
+        private bool IsWaveSpawnReady()
+        {
+            if (_levelWaveConfig == null || _levelWaveConfig.EnemyWaveConfigList == null)
+            {
+                Debug.LogError("Level wave config is not available, wave cannot start.");
+                return false;
+            } 
+                
             
-            Debug.LogError("LevelWaveConfig or EnemyWaveConfigList is null. EnemyWaveSystem cannot start.");
-            return false;
+            if (_enemySpawner == null)
+            {
+                Debug.LogError("EnemySpawner is null. Wave cannot start.");
+                return false;
+            }
 
+            return true;
+        }
+        
+        private void HandleCancellation()
+        {
+            if (_cts != null)
+            {
+                _cts.Cancel();
+                _cts.Dispose();
+            }
+            _cts = new CancellationTokenSource();
         }
     }
 }

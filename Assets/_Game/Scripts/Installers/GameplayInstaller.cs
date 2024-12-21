@@ -1,4 +1,5 @@
 using Gameplay;
+using Interfaces;
 using UnityEngine;
 using Zenject;
 
@@ -10,7 +11,9 @@ namespace Installers
         private EnemySpawner _enemySpawner;
         public override void InstallBindings()
         {
-            Container.Bind<EnemySpawner>().FromInstance(_enemySpawner).AsSingle();
+            Container.Bind<IEventDispatcher>().To<EventDispatcher>().FromInstance(EventDispatcher.Instance).AsSingle();
+            Container.Bind<IEnemySpawner>().To<EnemySpawner>().FromInstance(_enemySpawner).AsSingle();
+            Container.BindInstance(Camera.main).AsSingle();
         }
     }
 }
