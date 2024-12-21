@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using Data.Configs.TowerConfigs;
 using Interfaces;
+using States.StateMachines;
 using UnityEngine;
 using Utilities.TypeUtilities;
 
@@ -15,6 +17,8 @@ namespace Gameplay.Towers
         private float _delayBetweenEachFiring;
         private float _towerCheckRadius;
         private float _towerBaseDamage;
+
+        protected TowerStateMachine<BaseTower> _towerStateMachine;
 
         #endregion
         
@@ -42,9 +46,18 @@ namespace Gameplay.Towers
             _towerBaseDamage = _towerConfig.TowerBaseDamage;
             _delayBetweenEachFiring = _towerConfig.DelayBetweenEachFiring;
             _towerCheckRadius = _towerConfig.TowerCheckRadius;
-            
         }
-        
+
+        public virtual void Update()
+        {
+            _towerStateMachine.UpdateState(this);
+        }
+
+        public void ChangeToNextState()
+        {
+            _towerStateMachine.ChangeToNextState(this);
+        }
+
         public void OnCalledFromPool()
         {
             

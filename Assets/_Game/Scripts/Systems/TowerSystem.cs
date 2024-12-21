@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Data.Configs.TowerConfigs;
 using Gameplay.Towers;
 using Interfaces;
 using Interfaces.TowerInterfaces;
@@ -11,16 +10,14 @@ namespace Systems
 {
     public class TowerSystem : BaseSystem, ITowerPlacer
     {
-        private readonly TowerConfigList _towerConfigList;
         private readonly ITowerPlatformController _towerPlatformController;
         private readonly ITowerSpawner _towerSpawner;
         private Dictionary<TowerPlatform, BaseTower> _spawnedTowerList;
 
         private Enums.TowerType _currentSelectedTowerType;
         
-        public TowerSystem(TowerConfigList towerConfigList, ITowerPlatformController towerPlatformController, ITowerSpawner towerSpawner)
+        public TowerSystem(ITowerPlatformController towerPlatformController, ITowerSpawner towerSpawner)
         {
-            _towerConfigList = towerConfigList;
             _towerPlatformController = towerPlatformController;
             _towerSpawner = towerSpawner;
         }
@@ -48,17 +45,28 @@ namespace Systems
                     return false;
                 }
 
-                _towerSpawner.DeSpawn(_spawnedTowerList[towerPlatform]);
-                BaseTower replacedTower = _towerSpawner.Spawn(_currentSelectedTowerType);
-                _spawnedTowerList[towerPlatform] = replacedTower;
-                _towerPlatformController.PlaceTheTower(replacedTower);
+                ReplaceTower(towerPlatform, _spawnedTowerList[towerPlatform]);
                 return true;
             }
             
-            BaseTower newTower = _towerSpawner.Spawn(_currentSelectedTowerType);
-            _spawnedTowerList.Add(towerPlatform, newTower);
-            _towerPlatformController.PlaceTheTower(newTower);
+            PlaceNewTower(towerPlatform);
             return true;
+        }
+        
+        private void ReplaceTower(TowerPlatform platform, BaseTower existingTower)
+        {
+            _towerSpawner.DeSpawn(existingTower);
+            BaseTower newTower = _towerSpawner.Spawn(_currentSelectedTowerType);
+            _spawnedTowerList[platform] = newTower;
+            _towerPlatformController.PlaceTheTower(newTower);
+        }
+        
+        private void PlaceNewTower(TowerPlatform platform)
+        {
+            BaseTower newTower = _towerSpawner.Spawn(_currentSelectedTowerType);
+            _spawnedTowerList.Add(platform, newTower);
+            _towerPlatformController.PlaceTheTower(newTower);
+            Debug.Log($"Placed new tower of type '{_currentSelectedTowerType}' on platform '{platform.name}'.");
         }
     }
 }
