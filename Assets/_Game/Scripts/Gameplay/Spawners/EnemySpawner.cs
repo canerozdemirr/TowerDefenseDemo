@@ -30,10 +30,6 @@ namespace Gameplay.Spawners
             _eventDispatcher = eventDispatcher;
             _allEnemyConfigs = allEnemyConfigs;
             InitializePool();
-        }
-
-        private void OnEnable()
-        {
             _eventDispatcher.Subscribe<EnemyDeathEvent>(OnEnemyDeath);
         }
 

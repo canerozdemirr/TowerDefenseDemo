@@ -4,15 +4,6 @@ using UnityEngine;
 
 public class TowerPlatform : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [SerializeField] private Transform _towerPlacementPoint;
+    public Transform TowerPlacementPoint() => _towerPlacementPoint;
 }

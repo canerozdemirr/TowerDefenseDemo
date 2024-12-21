@@ -2,7 +2,7 @@ using Gameplay.Enemies;
 using Gameplay.Towers;
 using Utilities.TypeUtilities;
 
-namespace Interfaces
+namespace Interfaces.TowerInterfaces
 {
     public interface ITowerSpawner
     {

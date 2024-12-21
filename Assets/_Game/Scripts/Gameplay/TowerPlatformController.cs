@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Gameplay.Towers;
 using Interfaces.TowerInterfaces;
 using UnityEngine;
 
@@ -7,6 +8,8 @@ namespace Gameplay
     public class TowerPlatformController : MonoBehaviour, ITowerPlatformController
     {
         private HashSet<TowerPlatform> _allPlatforms;
+
+        private TowerPlatform _currentlySelectedTowerPlatform;
     
         public void Initialize()
         {
@@ -28,7 +31,13 @@ namespace Gameplay
                 return false;
             }
 
+            _currentlySelectedTowerPlatform = towerPlatform;
             return true;
+        }
+
+        public void PlaceTheTower(BaseTower tower)
+        {
+            tower.transform.position = _currentlySelectedTowerPlatform.TowerPlacementPoint().position;
         }
     }
 }

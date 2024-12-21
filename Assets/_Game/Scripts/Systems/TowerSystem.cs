@@ -29,6 +29,7 @@ namespace Systems
         {
             base.Initialize();
             _towerPlatformController.Initialize();
+            _spawnedTowerList = new Dictionary<TowerPlatform, BaseTower>();
         }
 
         public bool TryToPlaceTower(TowerPlatform towerPlatform)
@@ -50,11 +51,13 @@ namespace Systems
                 _towerSpawner.DeSpawn(_spawnedTowerList[towerPlatform]);
                 BaseTower replacedTower = _towerSpawner.Spawn(_currentSelectedTowerType);
                 _spawnedTowerList[towerPlatform] = replacedTower;
+                _towerPlatformController.PlaceTheTower(replacedTower);
                 return true;
             }
             
             BaseTower newTower = _towerSpawner.Spawn(_currentSelectedTowerType);
             _spawnedTowerList.Add(towerPlatform, newTower);
+            _towerPlatformController.PlaceTheTower(newTower);
             return true;
         }
     }

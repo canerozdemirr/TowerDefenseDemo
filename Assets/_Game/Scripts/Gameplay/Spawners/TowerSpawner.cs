@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Data.Configs.TowerConfigs;
 using Gameplay.Towers;
 using Interfaces;
+using Interfaces.TowerInterfaces;
 using Pools;
 using UnityEngine;
 using Utilities.TypeUtilities;
