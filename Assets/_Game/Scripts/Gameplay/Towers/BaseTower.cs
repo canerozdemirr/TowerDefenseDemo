@@ -19,20 +19,21 @@ namespace Gameplay.Towers
         private float _towerBaseDamage;
 
         protected TowerStateMachine<BaseTower> _towerStateMachine;
+        protected LayerMask _enemyDetectionLayerMask;
 
         #endregion
         
-        #region Getters
-
-        public Enums.TowerType TowerType => _towerType;
-        
-        #endregion
-
         #region Components
 
         [SerializeField] 
         private SphereCollider _towerCollider;
 
+        #endregion
+        
+        #region Getters
+        public Enums.TowerType TowerType => _towerType;
+        public SphereCollider TowerCollider => _towerCollider;
+        public LayerMask EnemyDetectionLayerMask => _enemyDetectionLayerMask;
         #endregion
 
         public virtual void Initialize(TowerConfig towerConfig)
@@ -58,6 +59,12 @@ namespace Gameplay.Towers
             _towerStateMachine.ChangeToNextState(this);
         }
 
+        public void SetupTowerCollider()
+        {
+            _towerCollider.enabled = true;
+            _towerCollider.radius = _towerCheckRadius;
+        }
+
         public void OnCalledFromPool()
         {
             
@@ -65,7 +72,7 @@ namespace Gameplay.Towers
 
         public void OnReturnToPool()
         {
-            
+            _towerCollider.enabled = false;
         }
     }
 }
