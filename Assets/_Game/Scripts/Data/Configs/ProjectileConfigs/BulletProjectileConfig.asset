@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d41559145c7dce4ca01e444eddfc83c, type: 3}
+  m_Name: BulletProjectileConfig
+  m_EditorClassIdentifier: 
+  _configID: 8ff65f17-90f3-457e-bd8a-4fc4c7426d3f
+  projectileType: 0
+  projectilePrefab: {fileID: 4629507578097053536, guid: fad3a24f420d3a44da4f2f1f77a41352,
+    type: 3}
+  speed: 10

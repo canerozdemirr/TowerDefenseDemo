@@ -13,5 +13,11 @@ namespace Utilities.TypeUtilities
             Zombie = 0,
             Giant = 1
         }
+
+        public enum ProjectileType
+        {
+            Bullet = 0,
+            Bomb = 1
+        }
     }
 }

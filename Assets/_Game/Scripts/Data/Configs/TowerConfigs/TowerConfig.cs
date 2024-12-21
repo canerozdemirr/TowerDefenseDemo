@@ -1,4 +1,4 @@
-using Data.Configs;
+using Data.Configs.ProjectileConfigs;
 using NaughtyAttributes;
 using UnityEngine;
 using Utilities.TypeUtilities;
@@ -29,10 +29,15 @@ namespace Data.Configs.TowerConfigs
         [SerializeField] 
         private GameObject _towerPrefab;
 
+        [Foldout("Projectile Attributes")] 
+        [SerializeField]
+        private ProjectileConfig _projectileConfig;
+
         public Enums.TowerType TowerType => _towerType;
         public float TowerBaseDamage => _towerBaseDamage;
         public float DelayBetweenEachFiring => _delayBetweenEachFiring;
         public float TowerCheckRadius => _towerCheckRadius;
         public GameObject TowerPrefab => _towerPrefab;
+        public ProjectileConfig ProjectileConfig => _projectileConfig;
     }
 }

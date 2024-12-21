@@ -15,3 +15,5 @@ MonoBehaviour:
   _levelWaveConfig: {fileID: 11400000, guid: a9494b5141fb95f4caef4f0a9a14ee2f, type: 2}
   _allEnemyConfigs: {fileID: 11400000, guid: 0037463c1e8adee499046e0a44676940, type: 2}
   _towerConfigList: {fileID: 11400000, guid: e8638487dbce73b47869594dabec5628, type: 2}
+  _projectileListConfig: {fileID: 11400000, guid: dee3bf9107b19c948a92a4ff6fcacd83,
+    type: 2}

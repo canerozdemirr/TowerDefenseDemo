@@ -15,6 +15,8 @@ MonoBehaviour:
   _configID: b59b8513-be8f-4d33-b292-66f970bc6b21
   _towerType: 1
   _towerBaseDamage: 25
-  _delayBetweenEachFiring: 0.75
+  _delayBetweenEachFiring: 1
+  _towerCheckRadius: 4
   _towerPrefab: {fileID: 7732444599458284704, guid: a77fe853fc52c0a47bf7522f14205098,
     type: 3}
+  _projectileConfig: {fileID: 11400000, guid: b2b2b7b8ef11a2342bbeead515ccb335, type: 2}

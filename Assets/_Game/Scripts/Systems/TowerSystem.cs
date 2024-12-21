@@ -1,8 +1,7 @@
 using System.Collections.Generic;
+using Gameplay;
 using Gameplay.Towers;
-using Interfaces;
 using Interfaces.TowerInterfaces;
-using Systems;
 using UnityEngine;
 using Utilities.TypeUtilities;
 

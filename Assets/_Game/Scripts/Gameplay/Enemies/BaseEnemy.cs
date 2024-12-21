@@ -30,7 +30,6 @@ namespace Gameplay.Enemies
         #endregion
         
         private IEventDispatcher _eventDispatcher;
-        //private AllEnemyConfigs _allEnemyConfigs;
 
         [Foldout("Components")] 
         [SerializeField]

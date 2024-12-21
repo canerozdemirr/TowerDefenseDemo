@@ -1,3 +1,8 @@
+using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using Gameplay.Enemies;
+using Gameplay.Projectiles;
 using Gameplay.Towers;
 using Interfaces.StateInterfaces;
 using UnityEngine;
@@ -6,37 +11,83 @@ namespace States.TowerStates
 {
     public class TowerAttackState<T> : ITowerState<T> where T : BaseTower
     {
-        private Collider[] _detectedEnemies;
+        private BaseTower _tower;
+        private CancellationTokenSource _cts;
         public void Enter(T tower)
         {
             Debug.Log($"{tower.gameObject.name} entered {GetType().Name} state.");
-            _detectedEnemies = new Collider[] { };
+            _cts = new CancellationTokenSource();
+            _tower = tower;
+            AttackEnemy();
         }
 
         public void Execute(T tower)
         {
-            if (!CheckForEnemies(tower))
+            if (!CheckForEnemies())
             {
                 tower.ChangeToNextState();
-                return;
             }
-            
-            AttackEnemy();
         }
 
         public void Exit(T tower)
         {
+            _cts.Cancel();
+            _cts.Dispose();
+            _cts = new CancellationTokenSource();
             Debug.Log($"{tower.gameObject.name} exited {GetType().Name} state.");
         }
 
-        private bool CheckForEnemies(T tower)
+        private bool CheckForEnemies()
         {
-            return Physics.OverlapSphereNonAlloc(tower.transform.position, tower.TowerCollider.radius, _detectedEnemies, tower.EnemyDetectionLayerMask) > 0;
+            return _tower.EnemyListInRange.Count > 0;
         }
 
         private void AttackEnemy()
         {
-            
+            _ = FiringRoutine();
+        }
+
+        private async UniTask FiringRoutine()
+        {
+            try
+            {
+                while (!_cts.IsCancellationRequested)
+                {
+                    BaseProjectile projectile = _tower.ProjectileSpawner.Spawn(_tower.ProjectileConfig.projectileType);
+                    if (projectile == null)
+                    {
+                        Debug.LogError("Failed to spawn projectile.");
+                        return;
+                    }
+
+                    BaseEnemy targetEnemy = null;
+                    for (int i = 0; i < _tower.EnemyListInRange.Count; i++)
+                    {
+                        if (_tower.EnemyListInRange[i] != null)
+                        {
+                            targetEnemy = _tower.EnemyListInRange[i];
+                            break;
+                        }
+                    }
+
+                    if (targetEnemy != null)
+                    {
+                        projectile.transform.position = _tower.ProjectileSpawnPoint.position;
+                        projectile.PrepareProjectile(_tower.EnemyDetectionLayerMask, _tower.ProjectileConfig.speed, _tower.TowerBaseDamage);
+                        projectile.Launch(targetEnemy.transform.position);
+                    }
+                    
+                    await UniTask.Delay((int)(_tower.DelayBetweenEachFiring * 1000), cancellationToken: _cts.Token);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.LogWarning("Wave spawning canceled.");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"An error occurred during wave spawning: {e.Message}");
+            }
         }
     }
 }

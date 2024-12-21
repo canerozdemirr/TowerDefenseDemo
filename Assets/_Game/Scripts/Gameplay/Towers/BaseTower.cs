@@ -1,10 +1,15 @@
 using System;
 using System.Collections.Generic;
+using Data.Configs.ProjectileConfigs;
 using Data.Configs.TowerConfigs;
+using Events;
+using Gameplay.Enemies;
 using Interfaces;
 using States.StateMachines;
 using UnityEngine;
 using Utilities.TypeUtilities;
+using Zenject;
+using IPoolable = Interfaces.IPoolable;
 
 namespace Gameplay.Towers
 {
@@ -17,9 +22,12 @@ namespace Gameplay.Towers
         private float _delayBetweenEachFiring;
         private float _towerCheckRadius;
         private float _towerBaseDamage;
-
+        private ProjectileConfig _projectileConfig;
+        private IProjectileSpawner _projectileSpawner;
+        private IEventDispatcher _eventDispatcher;
         protected TowerStateMachine<BaseTower> _towerStateMachine;
-        protected LayerMask _enemyDetectionLayerMask;
+
+        private List<BaseEnemy> _enemyListInRange;
 
         #endregion
         
@@ -27,6 +35,12 @@ namespace Gameplay.Towers
 
         [SerializeField] 
         private SphereCollider _towerCollider;
+        
+        [SerializeField]
+        private LayerMask _enemyDetectionLayerMask;
+
+        [SerializeField] 
+        private Transform _projectileSpawnPoint;
 
         #endregion
         
@@ -34,7 +48,21 @@ namespace Gameplay.Towers
         public Enums.TowerType TowerType => _towerType;
         public SphereCollider TowerCollider => _towerCollider;
         public LayerMask EnemyDetectionLayerMask => _enemyDetectionLayerMask;
+        public float DelayBetweenEachFiring => _delayBetweenEachFiring;
+        public ProjectileConfig ProjectileConfig => _projectileConfig;
+        public IProjectileSpawner ProjectileSpawner => _projectileSpawner;
+        public float TowerBaseDamage => _towerBaseDamage;
+        public float TowerCheckRadius => _towerCheckRadius;
+        public Transform ProjectileSpawnPoint => _projectileSpawnPoint;
+        public List<BaseEnemy> EnemyListInRange => _enemyListInRange;
         #endregion
+
+        [Inject]
+        public void Inject(IProjectileSpawner projectileSpawner, IEventDispatcher eventDispatcher)
+        {
+            _projectileSpawner = projectileSpawner;
+            _eventDispatcher = eventDispatcher;
+        }
 
         public virtual void Initialize(TowerConfig towerConfig)
         {
@@ -47,6 +75,9 @@ namespace Gameplay.Towers
             _towerBaseDamage = _towerConfig.TowerBaseDamage;
             _delayBetweenEachFiring = _towerConfig.DelayBetweenEachFiring;
             _towerCheckRadius = _towerConfig.TowerCheckRadius;
+            _projectileConfig = _towerConfig.ProjectileConfig;
+            _enemyListInRange = new List<BaseEnemy>();
+            _eventDispatcher.Subscribe<EnemyDeathEvent>(OnEnemyDeath);
         }
 
         public virtual void Update()
@@ -65,6 +96,25 @@ namespace Gameplay.Towers
             _towerCollider.radius = _towerCheckRadius;
         }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.TryGetComponent(out BaseEnemy baseEnemy))
+            {
+                if ((_enemyDetectionLayerMask.value & (1 << other.gameObject.layer)) != 0)
+                {
+                    _enemyListInRange.Add(baseEnemy);
+                }
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.TryGetComponent(out BaseEnemy baseEnemy) && _enemyListInRange.Contains(baseEnemy))
+            {
+                _enemyListInRange.Remove(baseEnemy);
+            }
+        }
+
         public void OnCalledFromPool()
         {
             
@@ -73,6 +123,15 @@ namespace Gameplay.Towers
         public void OnReturnToPool()
         {
             _towerCollider.enabled = false;
+            _eventDispatcher.Unsubscribe<EnemyDeathEvent>(OnEnemyDeath);
+        }
+        
+        private void OnEnemyDeath(EnemyDeathEvent enemyDeathEvent)
+        {
+            if (_enemyListInRange.Contains(enemyDeathEvent.DeadEnemy))
+            {
+                _enemyListInRange.Remove(enemyDeathEvent.DeadEnemy);
+            }
         }
     }
 }
