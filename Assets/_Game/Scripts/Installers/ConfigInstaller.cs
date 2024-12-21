@@ -1,5 +1,6 @@
 using Data.Configs;
 using Data.Configs.EnemyConfigs;
+using Data.Configs.TowerConfigs;
 using UnityEngine;
 using Zenject;
 
@@ -13,11 +14,15 @@ namespace Installers
 
         [SerializeField] 
         private AllEnemyConfigs _allEnemyConfigs;
+
+        [SerializeField] 
+        private TowerConfigList _towerConfigList;
         
         public override void InstallBindings()
         {
             Container.Bind<LevelWaveConfig>().FromInstance(_levelWaveConfig).AsSingle();
             Container.Bind<AllEnemyConfigs>().FromInstance(_allEnemyConfigs).AsSingle();
+            Container.Bind<TowerConfigList>().FromInstance(_towerConfigList).AsSingle();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Installers
     {
         public override void InstallBindings()
         {
-            Container.Bind<InputSystem>().AsSingle();
+            Container.BindInterfacesAndSelfTo<InputSystem>().AsSingle();
             Container.Bind<ITowerPlacer>().To<TowerSystem>().AsSingle();
             Container.BindInterfacesAndSelfTo<EnemyWaveSystem>().AsSingle();
         }

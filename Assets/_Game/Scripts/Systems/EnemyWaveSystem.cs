@@ -51,8 +51,6 @@ namespace Systems
                 foreach (var enemyWaveConfig in _levelWaveConfig.EnemyWaveConfigList)
                 {
                     await SpawnWave(enemyWaveConfig);
-
-                    // Delay before the next wave
                     await UniTask.Delay((int)(enemyWaveConfig.SpawnDelayBetweenEachUnit * 1000), cancellationToken: _cts.Token);
                 }
             }

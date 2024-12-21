@@ -4,7 +4,7 @@ namespace Utilities.TypeUtilities
     {
         public enum TowerType
         {
-            RocketTower = 0,
+            TurretTower = 0,
             BombTower = 1
         }
         
