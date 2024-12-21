@@ -30,31 +30,23 @@ namespace Gameplay.Enemies
         #endregion
         
         private IEventDispatcher _eventDispatcher;
-        private AllEnemyConfigs _allEnemyConfigs;
+        //private AllEnemyConfigs _allEnemyConfigs;
 
         [Foldout("Components")] 
         [SerializeField]
         private NavMeshAgent _navMeshAgent;
 
         [Inject]
-        public void Inject(AllEnemyConfigs allEnemyConfigs, IEventDispatcher eventDispatcher)
+        public void Inject(IEventDispatcher eventDispatcher)
         {
-            _allEnemyConfigs = allEnemyConfigs;
             _eventDispatcher = eventDispatcher;
         }
         
-        public virtual void Initialize()
+        public virtual void Initialize(EnemyConfig config)
         {
             if (_enemyConfig == null)
             {
-                foreach (EnemyConfig config in _allEnemyConfigs.EnemyConfigList)
-                {
-                    if (config.EnemyType != _enemyType) 
-                        continue;
-                
-                    _enemyConfig = config;
-                    break;
-                }
+                _enemyConfig = config;
             }
 
             _enemyType = _enemyConfig.EnemyType;

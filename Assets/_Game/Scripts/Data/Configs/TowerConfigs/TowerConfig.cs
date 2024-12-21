@@ -23,11 +23,16 @@ namespace Data.Configs.TowerConfigs
         
         [Foldout("Tower Attributes")] 
         [SerializeField] 
+        private float _towerCheckRadius;
+        
+        [Foldout("Tower Attributes")] 
+        [SerializeField] 
         private GameObject _towerPrefab;
 
         public Enums.TowerType TowerType => _towerType;
         public float TowerBaseDamage => _towerBaseDamage;
         public float DelayBetweenEachFiring => _delayBetweenEachFiring;
+        public float TowerCheckRadius => _towerCheckRadius;
         public GameObject TowerPrefab => _towerPrefab;
     }
 }

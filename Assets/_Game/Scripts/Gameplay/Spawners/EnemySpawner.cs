@@ -8,7 +8,7 @@ using UnityEngine;
 using Utilities.TypeUtilities;
 using Zenject;
 
-namespace Gameplay
+namespace Gameplay.Spawners
 {
     public class EnemySpawner : MonoBehaviour, IEnemySpawner
     {
@@ -17,19 +17,19 @@ namespace Gameplay
 
         [SerializeField] private Transform _endPoint;
 
-        private EnemyConfig _enemyConfig;
-
         private Dictionary<Enums.EnemyType, GameObjectPool<BaseEnemy>> _prefabMap;
         
         private DiContainer _container;
         private IEventDispatcher _eventDispatcher;
+        private AllEnemyConfigs _allEnemyConfigs;
 
         [Inject]
         public void Inject(DiContainer container, AllEnemyConfigs allEnemyConfigs, IEventDispatcher eventDispatcher)
         {
             _container = container;
             _eventDispatcher = eventDispatcher;
-            InitializePool(allEnemyConfigs);
+            _allEnemyConfigs = allEnemyConfigs;
+            InitializePool();
         }
 
         private void OnEnable()
@@ -42,10 +42,10 @@ namespace Gameplay
             _eventDispatcher.Unsubscribe<EnemyDeathEvent>(OnEnemyDeath);
         }
 
-        private void InitializePool(AllEnemyConfigs allEnemyConfigs)
+        private void InitializePool()
         {
             _prefabMap = new Dictionary<Enums.EnemyType, GameObjectPool<BaseEnemy>>();
-            foreach (EnemyConfig config in allEnemyConfigs.EnemyConfigList)
+            foreach (EnemyConfig config in _allEnemyConfigs.EnemyConfigList)
             {
                 if (!_prefabMap.ContainsKey(config.EnemyType))
                 {
@@ -74,8 +74,15 @@ namespace Gameplay
             {
                 BaseEnemy spawnedEnemy = pool.Spawn();
                 _container.Inject(spawnedEnemy);
-                spawnedEnemy.Initialize();
-                
+                for (int i = 0; i < _allEnemyConfigs.EnemyConfigList.Count; i++)
+                {
+                    if (_allEnemyConfigs.EnemyConfigList[i].EnemyType == enemyType)
+                    {
+                        spawnedEnemy.Initialize(_allEnemyConfigs.EnemyConfigList[i]);
+                        break;
+                    }
+                }
+
                 spawnedEnemy.transform.position = _spawnPoints[0].position;
                 if (spawnedEnemy is IMovable movable)
                 {
