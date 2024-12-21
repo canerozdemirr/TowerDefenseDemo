@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using Events;
 using Gameplay;
 using Gameplay.Towers;
+using Interfaces;
 using Interfaces.TowerInterfaces;
 using UnityEngine;
 using Utilities.TypeUtilities;
@@ -11,14 +13,16 @@ namespace Systems
     {
         private readonly ITowerPlatformController _towerPlatformController;
         private readonly ITowerSpawner _towerSpawner;
+        private readonly IEventDispatcher _eventDispatcher;
         private Dictionary<TowerPlatform, BaseTower> _spawnedTowerList;
 
         private Enums.TowerType _currentSelectedTowerType;
         
-        public TowerSystem(ITowerPlatformController towerPlatformController, ITowerSpawner towerSpawner)
+        public TowerSystem(ITowerPlatformController towerPlatformController, ITowerSpawner towerSpawner, IEventDispatcher eventDispatcher)
         {
             _towerPlatformController = towerPlatformController;
             _towerSpawner = towerSpawner;
+            _eventDispatcher = eventDispatcher;
         }
 
         public override void Initialize()
@@ -26,11 +30,12 @@ namespace Systems
             base.Initialize();
             _towerPlatformController.Initialize();
             _spawnedTowerList = new Dictionary<TowerPlatform, BaseTower>();
+            _eventDispatcher.Subscribe<SelectedTowerTypeChangeEvent>(OnTowerTypeSelectionChange);
         }
 
-        public bool TryToPlaceTower(TowerPlatform towerPlatform)
+        public bool TryToPlaceTower(Vector3 touchPosition)
         {
-            if (!_towerPlatformController.CheckForTowerAvailability(towerPlatform))
+            if (!_towerPlatformController.CheckForTowerAvailability(touchPosition, out TowerPlatform towerPlatform))
             {
                 Debug.LogError("This tower platform is not defined within the available platforms! You can't spawn a tower in that platform!");
                 return false;
@@ -66,6 +71,17 @@ namespace Systems
             _spawnedTowerList.Add(platform, newTower);
             _towerPlatformController.PlaceTheTower(newTower);
             Debug.Log($"Placed new tower of type '{_currentSelectedTowerType}' on platform '{platform.name}'.");
+        }
+
+        private void OnTowerTypeSelectionChange(SelectedTowerTypeChangeEvent selectedTowerTypeChangeEvent)
+        {
+            _currentSelectedTowerType = selectedTowerTypeChangeEvent.TowerType;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            _eventDispatcher.Unsubscribe<SelectedTowerTypeChangeEvent>(OnTowerTypeSelectionChange);
         }
     }
 }

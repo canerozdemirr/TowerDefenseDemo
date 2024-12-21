@@ -7,13 +7,13 @@ namespace Gameplay
 {
     public class TowerPlatformController : MonoBehaviour, ITowerPlatformController
     {
-        private HashSet<TowerPlatform> _allPlatforms;
+        private List<TowerPlatform> _allPlatforms;
 
         private TowerPlatform _currentlySelectedTowerPlatform;
     
         public void Initialize()
         {
-            _allPlatforms = new HashSet<TowerPlatform>(transform.childCount);
+            _allPlatforms = new List<TowerPlatform>(transform.childCount);
             for (int i = 0; i < transform.childCount; i++)
             {
                 if (transform.GetChild(i).TryGetComponent(out TowerPlatform towerPlatform))
@@ -23,16 +23,20 @@ namespace Gameplay
             }
         }
 
-        public bool CheckForTowerAvailability(TowerPlatform towerPlatform)
+        public TowerPlatform CheckForTowerAvailability(Vector3 position, out TowerPlatform towerPlatform)
         {
-            if (!_allPlatforms.Contains(towerPlatform))
+            foreach (TowerPlatform visitedTowerPlatform in _allPlatforms)
             {
-                Debug.LogError("That platform is not available");
-                return false;
+                if (Vector3.Distance(position, visitedTowerPlatform.transform.position) < .5f)
+                {
+                    _currentlySelectedTowerPlatform = visitedTowerPlatform;
+                    towerPlatform = _currentlySelectedTowerPlatform;
+                    return visitedTowerPlatform;
+                }
             }
 
-            _currentlySelectedTowerPlatform = towerPlatform;
-            return true;
+            towerPlatform = null;
+            return null;
         }
 
         public void PlaceTheTower(BaseTower tower)

@@ -1,9 +1,10 @@
 using Gameplay;
+using UnityEngine;
 
 namespace Interfaces.TowerInterfaces
 {
     public interface ITowerPlacer
     {
-        bool TryToPlaceTower(TowerPlatform towerPlatform);
+        bool TryToPlaceTower(Vector3 touchPosition);
     }
 }

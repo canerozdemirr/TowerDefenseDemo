@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 667398781148352995}
   - component: {fileID: 8655844909257574016}
-  - component: {fileID: 460530349961643919}
+  - component: {fileID: 145377089965626601}
   m_Layer: 0
   m_Name: TowerPlatformParent
   m_TagString: Untagged
@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _towerPlacementPoint: {fileID: 7361912706253967795}
---- !u!65 &460530349961643919
+--- !u!65 &145377089965626601
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -63,12 +63,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3, y: 3, z: 3}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 3, y: 1, z: 3}
+  m_Center: {x: 0, y: -0.4, z: 0}
 --- !u!1 &5238526631909534823
 GameObject:
   m_ObjectHideFlags: 0

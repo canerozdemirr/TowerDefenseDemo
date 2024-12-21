@@ -26,8 +26,8 @@ namespace Gameplay.Towers
         private IProjectileSpawner _projectileSpawner;
         private IEventDispatcher _eventDispatcher;
         protected TowerStateMachine<BaseTower> _towerStateMachine;
-
         private List<BaseEnemy> _enemyListInRange;
+        private bool _isTowerActive;
 
         #endregion
         
@@ -82,6 +82,9 @@ namespace Gameplay.Towers
 
         public virtual void Update()
         {
+            if (!_isTowerActive)
+                return;
+            
             _towerStateMachine.UpdateState(this);
         }
 
@@ -117,12 +120,14 @@ namespace Gameplay.Towers
 
         public void OnCalledFromPool()
         {
-            
+            _isTowerActive = true;
         }
 
         public void OnReturnToPool()
         {
             _towerCollider.enabled = false;
+            _isTowerActive = false;
+            _enemyListInRange.Clear();
             _eventDispatcher.Unsubscribe<EnemyDeathEvent>(OnEnemyDeath);
         }
         

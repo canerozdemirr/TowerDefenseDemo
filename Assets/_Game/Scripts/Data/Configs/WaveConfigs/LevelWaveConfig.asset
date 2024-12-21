@@ -16,4 +16,5 @@ MonoBehaviour:
   _allEnemyWaveConfigs:
   - {fileID: 11400000, guid: a6bed676e4e662f429c791030500f76d, type: 2}
   - {fileID: 11400000, guid: 24be034869224b24291dce00b351c09c, type: 2}
-  _delayBetweenWaves: 0
+  - {fileID: 11400000, guid: 75a70a2924acd3b41bd2204ce741c635, type: 2}
+  _delayBetweenWaves: 5

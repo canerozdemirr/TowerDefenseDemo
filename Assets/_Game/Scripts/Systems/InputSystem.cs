@@ -57,12 +57,14 @@ namespace Systems
             if (Input.GetMouseButtonDown(0))
             {
                 Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
-                bool hasHit = Physics.Raycast(ray, out RaycastHit hit);
-                if (hasHit)
+                RaycastHit[] hits = Physics.RaycastAll(ray, 100.0F);
+                RaycastHit hit;
+                for (int i = 0; i < hits.Length; i++)
                 {
+                    hit = hits[i];
                     if (hit.collider.gameObject.TryGetComponent(out TowerPlatform towerPlatform))
                     {
-                        _towerPlacer.TryToPlaceTower(towerPlatform);
+                        _towerPlacer.TryToPlaceTower(towerPlatform.transform.position);
                     }
                 }
             }
