@@ -85,7 +85,7 @@ namespace Systems
             }
             catch (OperationCanceledException)
             {
-                Debug.LogWarning("Spawning task canceled.");
+                Debug.LogWarning("Enemy wave spawning task canceled.");
             }
             catch (Exception e)
             {
