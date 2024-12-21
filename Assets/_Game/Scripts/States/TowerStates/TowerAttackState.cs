@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Events;
 using Gameplay.Enemies;
 using Gameplay.Projectiles;
 using Gameplay.Towers;
@@ -18,6 +19,7 @@ namespace States.TowerStates
             Debug.Log($"{tower.gameObject.name} entered {GetType().Name} state.");
             _cts = new CancellationTokenSource();
             _tower = tower;
+            _tower.EventDispatcher.Subscribe<LevelFailedEvent>(OnLevelFailed);
             AttackEnemy();
         }
 
@@ -31,10 +33,16 @@ namespace States.TowerStates
 
         public void Exit(T tower)
         {
-            _cts.Cancel();
-            _cts.Dispose();
-            _cts = new CancellationTokenSource();
+            _cts?.Cancel();
+            _cts?.Dispose();
+            _tower.EventDispatcher.Unsubscribe<LevelFailedEvent>(OnLevelFailed);
             Debug.Log($"{tower.gameObject.name} exited {GetType().Name} state.");
+        }
+
+        private void OnLevelFailed(LevelFailedEvent levelFailedEvent)
+        {
+            _cts?.Cancel();
+            _cts?.Dispose();
         }
 
         private bool CheckForEnemies()
@@ -82,11 +90,11 @@ namespace States.TowerStates
             }
             catch (OperationCanceledException)
             {
-                Debug.LogWarning("Wave spawning canceled.");
+                Debug.LogWarning("Tower attacking canceled.");
             }
             catch (Exception e)
             {
-                Debug.LogError($"An error occurred during wave spawning: {e.Message}");
+                Debug.LogError($"An error occurred during tower attacking: {e.Message}");
             }
         }
     }

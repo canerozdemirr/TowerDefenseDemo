@@ -11,6 +11,7 @@ namespace Installers
             Container.BindInterfacesAndSelfTo<InputSystem>().AsSingle();
             Container.BindInterfacesAndSelfTo<TowerSystem>().AsSingle();
             Container.BindInterfacesAndSelfTo<EnemyWaveSystem>().AsSingle();
+            Container.BindInterfacesAndSelfTo<LevelSystem>().AsSingle();
         }
     }
 }

@@ -19,13 +19,19 @@ namespace Gameplay.Spawners
         private ProjectileListConfig _projectileListConfig;
 
         private DiContainer _container;
-        
+        private IEventDispatcher _eventDispatcher;
+
+        private List<BaseProjectile> _activeProjectileList;
+            
         [Inject]
-        public void Inject(DiContainer container, ProjectileListConfig projectileListConfig)
+        public void Inject(DiContainer container, ProjectileListConfig projectileListConfig, IEventDispatcher eventDispatcher)
         {
             _container = container;
             _projectileListConfig = projectileListConfig;
             InitializePool();
+            _eventDispatcher = eventDispatcher;
+            _eventDispatcher.Subscribe<LevelFailedEvent>(OnLevelFail);
+            _activeProjectileList = new List<BaseProjectile>();
         }
         
         private void InitializePool()
@@ -60,6 +66,7 @@ namespace Gameplay.Spawners
             {
                 BaseProjectile spawnedProjectile = pool.Spawn();
                 _container.Inject(spawnedProjectile);
+                _activeProjectileList.Add(spawnedProjectile);
                 return spawnedProjectile;
             }
 
@@ -71,6 +78,7 @@ namespace Gameplay.Spawners
         {
             if (_prefabMap.TryGetValue(projectile.ProjectileType, out var pool))
             {
+                _activeProjectileList.Remove(projectile);
                 pool.DeSpawn(projectile);
             }
             else
@@ -87,6 +95,20 @@ namespace Gameplay.Spawners
             }
 
             _prefabMap.Clear();
+        }
+
+        private void OnDestroy()
+        {
+            _eventDispatcher.Unsubscribe<LevelFailedEvent>(OnLevelFail);
+            ClearPools();
+        }
+        
+        private void OnLevelFail(LevelFailedEvent levelFailedEvent)
+        {
+            foreach (BaseProjectile projectile in _activeProjectileList)
+            {
+                DeSpawn(projectile);
+            }
         }
     }
 }

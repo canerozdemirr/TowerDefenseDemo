@@ -64,7 +64,7 @@ namespace Gameplay.Spawners
             }
         }
 
-        public void Spawn(Enums.EnemyType enemyType)
+        public BaseEnemy Spawn(Enums.EnemyType enemyType)
         {
             if (_prefabMap.TryGetValue(enemyType, out var pool))
             {
@@ -84,12 +84,12 @@ namespace Gameplay.Spawners
                 {
                     movable.OnMovementStart(_endPoint.transform.position);
                 }
+
+                return spawnedEnemy;
             }
 
-            else
-            {
-                Debug.LogError($"No pool found for EnemyType: {enemyType}");
-            }
+            Debug.LogError($"No pool found for EnemyType: {enemyType}");
+            return null;
         }
 
         public void DeSpawn(BaseEnemy enemy)

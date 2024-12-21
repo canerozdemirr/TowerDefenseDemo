@@ -55,6 +55,7 @@ namespace Gameplay.Towers
         public float TowerCheckRadius => _towerCheckRadius;
         public Transform ProjectileSpawnPoint => _projectileSpawnPoint;
         public List<BaseEnemy> EnemyListInRange => _enemyListInRange;
+        public IEventDispatcher EventDispatcher => _eventDispatcher;
         #endregion
 
         [Inject]

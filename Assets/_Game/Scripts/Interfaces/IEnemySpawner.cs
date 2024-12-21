@@ -5,7 +5,7 @@ namespace Interfaces
 {
     public interface IEnemySpawner
     {
-        void Spawn(Enums.EnemyType enemyType);
+        BaseEnemy Spawn(Enums.EnemyType enemyType);
         void DeSpawn(BaseEnemy enemy);
         void ClearPools();
     }

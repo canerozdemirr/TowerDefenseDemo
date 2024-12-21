@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Events;
 using Gameplay;
 using Gameplay.Towers;
@@ -31,6 +32,7 @@ namespace Systems
             _towerPlatformController.Initialize();
             _spawnedTowerList = new Dictionary<TowerPlatform, BaseTower>();
             _eventDispatcher.Subscribe<SelectedTowerTypeChangeEvent>(OnTowerTypeSelectionChange);
+            _eventDispatcher.Subscribe<LevelFailedEvent>(OnLevelFail);
         }
 
         public bool TryToPlaceTower(Vector3 touchPosition)
@@ -82,6 +84,18 @@ namespace Systems
         {
             base.Dispose();
             _eventDispatcher.Unsubscribe<SelectedTowerTypeChangeEvent>(OnTowerTypeSelectionChange);
+            _eventDispatcher.Unsubscribe<LevelFailedEvent>(OnLevelFail);
+            _towerSpawner.ClearPools();
+        }
+
+        private void OnLevelFail(LevelFailedEvent levelFailedEvent)
+        {
+            for (int i = 0; i < _spawnedTowerList.Keys.Count; i++)
+            {
+                TowerPlatform towerPlatform = _spawnedTowerList.Keys.ElementAt(i);
+                _towerSpawner.DeSpawn(_spawnedTowerList[towerPlatform]);
+            }
+            _spawnedTowerList.Clear();
         }
     }
 }

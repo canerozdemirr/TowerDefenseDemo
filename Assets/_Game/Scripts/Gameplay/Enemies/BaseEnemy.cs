@@ -20,7 +20,6 @@ namespace Gameplay.Enemies
         private Enums.EnemyType _enemyType;
         private float _health;
         private float _speed;
-        private int _baseDamage;
         #endregion
 
         #region Getters
@@ -51,8 +50,16 @@ namespace Gameplay.Enemies
             _enemyType = _enemyConfig.EnemyType;
             _health = _enemyConfig.Health;
             _speed = _enemyConfig.Speed;
-            _baseDamage = _enemyConfig.BaseDamage;
             _navMeshAgent.speed = _speed;
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag(Constants.EndPointTag))
+            {
+                OnMovementEnd();
+                _eventDispatcher.Dispatch(new EnemyReachedToBaseEvent());
+            }
         }
 
         public virtual void OnCalledFromPool()
@@ -64,7 +71,6 @@ namespace Gameplay.Enemies
         {
             _health = 0;
             _navMeshAgent.ResetPath();
-            _baseDamage = 0;
             _navMeshAgent.enabled = false;
         }
 
@@ -85,7 +91,7 @@ namespace Gameplay.Enemies
 
         public void OnMovementEnd()
         {
-            _eventDispatcher.Dispatch(new EnemyReachedToBaseEvent(_baseDamage));
+            //TODO: Do some stuff
         }
     }
 }
