@@ -102,17 +102,23 @@ namespace Gameplay.Towers
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent(out BaseEnemy baseEnemy))
+            if (!_isTowerActive)
+                return;
+
+            if (!other.TryGetComponent(out BaseEnemy baseEnemy)) 
+                return;
+            
+            if ((_enemyDetectionLayerMask.value & (1 << other.gameObject.layer)) != 0)
             {
-                if ((_enemyDetectionLayerMask.value & (1 << other.gameObject.layer)) != 0)
-                {
-                    _enemyListInRange.Add(baseEnemy);
-                }
+                _enemyListInRange.Add(baseEnemy);
             }
         }
 
         private void OnTriggerExit(Collider other)
         {
+            if (!_isTowerActive)
+                return;
+            
             if (other.TryGetComponent(out BaseEnemy baseEnemy) && _enemyListInRange.Contains(baseEnemy))
             {
                 _enemyListInRange.Remove(baseEnemy);
@@ -122,7 +128,6 @@ namespace Gameplay.Towers
         public void OnCalledFromPool()
         {
             _isTowerActive = true;
-            _eventDispatcher?.Subscribe<EnemyDeathEvent>(OnEnemyDeath);
         }
 
         public void OnReturnToPool()
