@@ -1,5 +1,6 @@
 using System;
 using Cysharp.Threading.Tasks;
+using Data.Configs.ProjectileConfigs;
 using DG.Tweening;
 using Interfaces;
 using UnityEngine;
@@ -36,10 +37,10 @@ namespace Gameplay.Projectiles
             _projectileSpawner = projectileSpawner;
         }
 
-        public virtual void PrepareProjectile(LayerMask enemyLayerMask, float speed, float damage)
+        public virtual void PrepareProjectile(LayerMask enemyLayerMask, ProjectileConfig projectileConfig, float damage)
         {
             _enemyLayerMask = enemyLayerMask;
-            _speed = speed;
+            _speed = projectileConfig.speed;
             _damageAmount = damage;
         }
         

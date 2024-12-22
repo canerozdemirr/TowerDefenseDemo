@@ -23,6 +23,10 @@ namespace Gameplay.Spawners
             _container = container;
             _eventDispatcher = eventDispatcher;
             _towerConfigList = towerConfigList;
+            if (_towerConfigList == null || _towerConfigList.AllTowerConfigs == null)
+            {
+                throw new System.InvalidOperationException("Tower configurations are missing!");
+            }
             InitializePool();
         }
         
@@ -88,6 +92,12 @@ namespace Gameplay.Spawners
 
         public void ClearPools()
         {
+            if (_prefabMap == null || _prefabMap.Count == 0)
+            {
+                Debug.LogWarning("Pools are already empty.");
+                return;
+            }
+
             foreach (var pool in _prefabMap.Values)
             {
                 pool.ClearObjectReferences();

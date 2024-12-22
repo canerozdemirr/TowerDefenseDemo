@@ -40,5 +40,13 @@ namespace States.StateMachines
             _currentState = _allStates[_currentStateIndex];
             _currentState.Enter(tower);
         }
+        
+        public void Reset(T tower)
+        {
+            _currentState?.Exit(tower);
+            _currentStateIndex = 0;
+            _currentState = _allStates[_currentStateIndex];
+            _currentState.Enter(tower);
+        }
     }
 }

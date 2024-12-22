@@ -130,6 +130,7 @@ namespace Gameplay.Towers
             _towerCollider.enabled = false;
             _isTowerActive = false;
             _enemyListInRange.Clear();
+            _towerStateMachine.Reset(this);
             _eventDispatcher.Unsubscribe<EnemyDeathEvent>(OnEnemyDeath);
         }
         

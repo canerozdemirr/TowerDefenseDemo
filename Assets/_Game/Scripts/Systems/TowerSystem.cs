@@ -90,9 +90,8 @@ namespace Systems
 
         private void OnLevelFail(LevelFailedEvent levelFailedEvent)
         {
-            for (int i = 0; i < _spawnedTowerList.Keys.Count; i++)
+            foreach (TowerPlatform towerPlatform in _spawnedTowerList.Keys.ToList())
             {
-                TowerPlatform towerPlatform = _spawnedTowerList.Keys.ElementAt(i);
                 _towerSpawner.DeSpawn(_spawnedTowerList[towerPlatform]);
             }
             _spawnedTowerList.Clear();

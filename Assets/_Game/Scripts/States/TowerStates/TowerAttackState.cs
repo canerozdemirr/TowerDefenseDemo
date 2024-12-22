@@ -19,7 +19,6 @@ namespace States.TowerStates
             Debug.Log($"{tower.gameObject.name} entered {GetType().Name} state.");
             _cts = new CancellationTokenSource();
             _tower = tower;
-            _tower.EventDispatcher.Subscribe<LevelFailedEvent>(OnLevelFailed);
             AttackEnemy();
         }
 
@@ -33,19 +32,13 @@ namespace States.TowerStates
 
         public void Exit(T tower)
         {
-            _cts?.Cancel();
-            _cts?.Dispose();
-            _tower.EventDispatcher.Unsubscribe<LevelFailedEvent>(OnLevelFailed);
+            if (_cts is {IsCancellationRequested: false})
+            {
+                _cts.Cancel();
+                _cts.Dispose();
+                _cts = null;
+            }
             Debug.Log($"{tower.gameObject.name} exited {GetType().Name} state.");
-        }
-
-        private void OnLevelFailed(LevelFailedEvent levelFailedEvent)
-        {
-            if (_cts == null) 
-                return;
-            
-            _cts.Cancel();
-            _cts.Dispose();
         }
 
         private bool CheckForEnemies()
@@ -84,7 +77,7 @@ namespace States.TowerStates
                     if (targetEnemy != null)
                     {
                         projectile.transform.position = _tower.ProjectileSpawnPoint.position;
-                        projectile.PrepareProjectile(_tower.EnemyDetectionLayerMask, _tower.ProjectileConfig.speed, _tower.TowerBaseDamage);
+                        projectile.PrepareProjectile(_tower.EnemyDetectionLayerMask, _tower.ProjectileConfig, _tower.TowerBaseDamage);
                         projectile.Launch(targetEnemy.transform.position);
                     }
                     

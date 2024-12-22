@@ -29,6 +29,10 @@ namespace Gameplay.Spawners
             _container = container;
             _eventDispatcher = eventDispatcher;
             _allEnemyConfigs = allEnemyConfigs;
+            if (_allEnemyConfigs == null || _allEnemyConfigs.EnemyConfigList == null)
+            {
+                throw new System.InvalidOperationException("Enemy configurations are not assigned.");
+            }
             InitializePool();
             _eventDispatcher.Subscribe<EnemyDeathEvent>(OnEnemyDeath);
         }
@@ -106,11 +110,16 @@ namespace Gameplay.Spawners
 
         public void ClearPools()
         {
+            if (_prefabMap == null || _prefabMap.Count == 0)
+            {
+                Debug.LogWarning("Enemy pools are already empty.");
+                return;
+            }
+
             foreach (var pool in _prefabMap.Values)
             {
                 pool.ClearObjectReferences();
             }
-
             _prefabMap.Clear();
         }
 

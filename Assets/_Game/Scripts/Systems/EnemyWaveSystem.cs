@@ -90,6 +90,7 @@ namespace Systems
             {
                 _enemySpawner.DeSpawn(enemy);
             }
+            _spawnedEnemies.Clear();
         }
 
         private async UniTask StartSpawningEnemiesInWave(EnemyWaveData enemyWaveData, float enemySpawnInterval)
@@ -130,12 +131,11 @@ namespace Systems
 
         private void HandleCancellation()
         {
-            if (_cts is {IsCancellationRequested: false})
+            if (_cts?.IsCancellationRequested == false)
             {
                 _cts.Cancel();
-                _cts.Dispose();
             }
-
+            _cts?.Dispose();
             _cts = new CancellationTokenSource();
         }
     }

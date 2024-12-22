@@ -89,11 +89,16 @@ namespace Gameplay.Spawners
 
         public void ClearPools()
         {
+            if (_prefabMap == null || _prefabMap.Count == 0)
+            {
+                Debug.LogWarning("Pools are already empty.");
+                return;
+            }
+
             foreach (var pool in _prefabMap.Values)
             {
                 pool.ClearObjectReferences();
             }
-
             _prefabMap.Clear();
         }
 
@@ -105,15 +110,11 @@ namespace Gameplay.Spawners
         
         private void OnLevelFail(LevelFailedEvent levelFailedEvent)
         {
-            foreach (BaseProjectile projectile in _activeProjectileList)
+            foreach (var pool in _prefabMap.Values)
             {
-                if (_prefabMap.TryGetValue(projectile.ProjectileType, out var pool))
+                foreach (var projectile in _activeProjectileList)
                 {
                     pool.DeSpawn(projectile);
-                }
-                else
-                {
-                    Debug.LogError($"No pool found for projectile type of: {projectile.ProjectileType}");
                 }
             }
             
