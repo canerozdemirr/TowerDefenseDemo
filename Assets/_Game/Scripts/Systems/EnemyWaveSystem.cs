@@ -130,7 +130,7 @@ namespace Systems
 
         private void HandleCancellation()
         {
-            if (_cts != null)
+            if (_cts is {IsCancellationRequested: false})
             {
                 _cts.Cancel();
                 _cts.Dispose();

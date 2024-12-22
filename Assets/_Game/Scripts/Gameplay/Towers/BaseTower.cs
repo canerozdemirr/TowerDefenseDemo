@@ -122,6 +122,7 @@ namespace Gameplay.Towers
         public void OnCalledFromPool()
         {
             _isTowerActive = true;
+            _eventDispatcher?.Subscribe<EnemyDeathEvent>(OnEnemyDeath);
         }
 
         public void OnReturnToPool()
