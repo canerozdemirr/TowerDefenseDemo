@@ -26,12 +26,19 @@ namespace UI
         private void OnEnable()
         {
             _eventDispatcher.Subscribe<WaveStartedEvent>(OnWaveStarted);
+            _eventDispatcher.Subscribe<LevelFailedEvent>(OnLevelFailed);
             _waveText.SetText($"Wave number: 0 / {_levelWaveConfig.EnemyWaveConfigList.Count}");
         }
 
         private void OnDestroy()
         {
             _eventDispatcher.Unsubscribe<WaveStartedEvent>(OnWaveStarted);
+            _eventDispatcher.Unsubscribe<LevelFailedEvent>(OnLevelFailed);
+        }
+
+        private void OnLevelFailed(LevelFailedEvent levelFailedEvent)
+        {
+            _waveText.SetText($"Wave number: 0 / {_levelWaveConfig.EnemyWaveConfigList.Count}");
         }
 
         private void OnWaveStarted(WaveStartedEvent waveStartedEvent)

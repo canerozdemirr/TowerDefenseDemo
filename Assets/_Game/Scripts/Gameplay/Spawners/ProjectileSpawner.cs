@@ -107,8 +107,17 @@ namespace Gameplay.Spawners
         {
             foreach (BaseProjectile projectile in _activeProjectileList)
             {
-                DeSpawn(projectile);
+                if (_prefabMap.TryGetValue(projectile.ProjectileType, out var pool))
+                {
+                    pool.DeSpawn(projectile);
+                }
+                else
+                {
+                    Debug.LogError($"No pool found for projectile type of: {projectile.ProjectileType}");
+                }
             }
+            
+            _activeProjectileList.Clear();
         }
     }
 }

@@ -1700,6 +1700,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 723fb229fc01e7347a542d2d15e7e417, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _button: {fileID: 825015216}
+  _towerSelectionButtons: {fileID: 2058268124}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -3724,7 +3726,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2058268125
 RectTransform:
   m_ObjectHideFlags: 0

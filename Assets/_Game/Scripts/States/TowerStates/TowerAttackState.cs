@@ -41,8 +41,11 @@ namespace States.TowerStates
 
         private void OnLevelFailed(LevelFailedEvent levelFailedEvent)
         {
-            _cts?.Cancel();
-            _cts?.Dispose();
+            if (_cts == null) 
+                return;
+            
+            _cts.Cancel();
+            _cts.Dispose();
         }
 
         private bool CheckForEnemies()
